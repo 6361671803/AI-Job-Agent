@@ -1,0 +1,382 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>AI Career Assistant</title>
+    <style>
+        :root {
+            --bg: #f5f8ff;
+            --surface: #ffffff;
+            --surface-strong: #f8fbff;
+            --text: #102a43;
+            --muted: #627d98;
+            --primary: #2563eb;
+            --primary-strong: #1d4ed8;
+            --accent: #6366f1;
+            --accent-soft: #eef2ff;
+            --success: #16a34a;
+            --shadow: 0 25px 80px rgba(15, 23, 42, 0.08);
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            min-height: 100vh;
+            background: radial-gradient(circle at top left, rgba(99, 102, 241, 0.16), transparent 32%),
+                        linear-gradient(180deg, #eff6ff 0%, #f8fafc 100%);
+            font-family: 'Segoe UI', sans-serif;
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        .container {
+            width: min(1140px, calc(100% - 32px));
+            margin: 0 auto;
+            padding: 36px 0 60px;
+        }
+
+        .topbar {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: space-between;
+            gap: 16px;
+            align-items: center;
+            margin-bottom: 28px;
+        }
+
+        .topbar h1 {
+            font-size: clamp(2.4rem, 1.8vw, 3.2rem);
+            letter-spacing: -0.05em;
+        }
+
+        .topbar p {
+            color: var(--muted);
+            max-width: 620px;
+        }
+
+        .hero-card {
+            display: grid;
+            grid-template-columns: 1.05fr 0.95fr;
+            gap: 24px;
+            background: var(--surface);
+            border-radius: 28px;
+            padding: 34px;
+            box-shadow: var(--shadow);
+            margin-bottom: 32px;
+            border: 1px solid rgba(37, 99, 235, 0.1);
+        }
+
+        .hero-card h2 {
+            font-size: 1.7rem;
+            margin-bottom: 10px;
+        }
+
+        .hero-card p {
+            color: var(--muted);
+            margin-bottom: 22px;
+        }
+
+        .feature-pill {
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            padding: 10px 16px;
+            background: rgba(59, 130, 246, 0.12);
+            border-radius: 999px;
+            color: var(--primary-strong);
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .upload-card {
+            background: var(--surface-strong);
+            border-radius: 22px;
+            padding: 28px;
+            border: 1px solid rgba(37, 99, 235, 0.12);
+        }
+
+        .upload-card label.file-select {
+            width: 100%;
+            display: inline-flex;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px;
+            padding: 18px 22px;
+            border-radius: 16px;
+            border: 1px dashed rgba(37, 99, 235, 0.45);
+            cursor: pointer;
+            color: var(--text);
+            font-weight: 600;
+            margin-bottom: 18px;
+            background: #ffffff;
+        }
+
+        .upload-card input[type="file"] {
+            display: none;
+        }
+
+        .upload-card label.field-label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 700;
+            color: var(--text);
+        }
+
+        .upload-card select {
+            width: 100%;
+            padding: 14px 16px;
+            margin-bottom: 18px;
+            border-radius: 16px;
+            border: 1px solid rgba(37, 99, 235, 0.2);
+            background: #ffffff;
+            color: var(--text);
+            font-size: 1rem;
+        }
+
+        .upload-card button,
+        .download-button {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            border: none;
+            background: var(--primary);
+            color: white;
+            border-radius: 14px;
+            padding: 14px 22px;
+            font-size: 1rem;
+            cursor: pointer;
+            transition: transform 150ms ease, box-shadow 150ms ease, background 150ms ease;
+        }
+
+        .upload-card button:hover,
+        .download-button:hover {
+            transform: translateY(-1px);
+            box-shadow: 0 18px 30px rgba(37, 99, 235, 0.18);
+            background: var(--primary-strong);
+        }
+
+        .upload-card .helper {
+            color: var(--muted);
+            font-size: 0.95rem;
+            margin-top: 12px;
+        }
+
+        .steps-grid {
+            display: grid;
+            grid-template-columns: repeat(4, minmax(0, 1fr));
+            gap: 16px;
+            margin-top: 28px;
+        }
+
+        .step-card {
+            background: rgba(56, 189, 248, 0.12);
+            border-radius: 20px;
+            padding: 18px;
+            border: 1px solid rgba(56, 189, 248, 0.18);
+            min-height: 98px;
+        }
+
+        .step-card .step-icon {
+            font-size: 1.35rem;
+            margin-bottom: 12px;
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            width: 44px;
+            height: 44px;
+            border-radius: 14px;
+            background: rgba(37, 99, 235, 0.1);
+            color: var(--primary);
+        }
+
+        .step-card h4 {
+            margin-bottom: 8px;
+            font-size: 1rem;
+        }
+
+        .step-card p {
+            color: var(--muted);
+            font-size: 0.95rem;
+        }
+
+        .loading-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(15, 23, 42, 0.8);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            opacity: 0;
+            visibility: hidden;
+            transition: opacity 0.25s ease, visibility 0.25s ease;
+            z-index: 50;
+        }
+
+        .loading-overlay.visible {
+            opacity: 1;
+            visibility: visible;
+        }
+
+        .loading-panel {
+            width: min(520px, calc(100% - 40px));
+            background: rgba(255,255,255,0.98);
+            border-radius: 28px;
+            padding: 34px 32px;
+            box-shadow: 0 30px 80px rgba(15, 23, 42, 0.22);
+            text-align: center;
+        }
+
+        .loading-panel h2 {
+            margin-bottom: 14px;
+            font-size: 1.9rem;
+        }
+
+        .loading-panel p {
+            color: var(--muted);
+            margin-bottom: 24px;
+        }
+
+        .loading-step {
+            font-size: 1.05rem;
+            color: var(--primary-strong);
+            font-weight: 700;
+        }
+
+        .spinner {
+            width: 72px;
+            height: 72px;
+            border: 8px solid rgba(37, 99, 235, 0.16);
+            border-top-color: var(--primary);
+            border-radius: 50%;
+            margin: 0 auto 24px;
+            animation: spin 1.2s linear infinite;
+        }
+
+        @keyframes spin {
+            to { transform: rotate(360deg); }
+        }
+
+        @media (max-width: 900px) {
+            .hero-card {
+                grid-template-columns: 1fr;
+            }
+
+            .steps-grid {
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+            }
+        }
+
+        @media (max-width: 640px) {
+            .topbar {
+                gap: 12px;
+            }
+
+            .hero-card, .upload-card {
+                padding: 24px;
+            }
+
+            .steps-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <div class="topbar">
+            <div>
+                <h1>AI Career Assistant</h1>
+                <p>Upload your resume and get a polished dashboard with ATS insights, skill matching, and professional job recommendations.</p>
+            </div>
+            <div class="feature-pill">🚀 Modern Resume Dashboard</div>
+        </div>
+
+        <div class="hero-card">
+            <div class="upload-card">
+                <h2>Ready to level up your career</h2>
+                <p>Upload a resume to start the analysis. The app will extract skills, score your resume, recommend jobs, and generate AI-powered insights.</p>
+
+                <form id="resume-form" method="POST" enctype="multipart/form-data">
+                    <label class="field-label" for="preferred_country">Preferred job location</label>
+                    <select name="preferred_country" id="preferred_country" required>
+                        <option value="Any">Any Country</option>
+                        <option value="United States">United States</option>
+                        <option value="Canada">Canada</option>
+                        <option value="United Kingdom">United Kingdom</option>
+                        <option value="Australia">Australia</option>
+                        <option value="Germany">Germany</option>
+                        <option value="India">India</option>
+                    </select>
+                    <label class="file-select">
+                        <span>Choose a resume file</span>
+                        <span>Browse</span>
+                        <input type="file" name="resume" accept=".pdf,.doc,.docx,.txt" required>
+                    </label>
+                    <button type="submit">Upload Resume</button>
+                    <p class="helper">Supported formats: PDF, DOC, DOCX, TXT</p>
+                </form>
+            </div>
+
+            <div>
+                <div class="step-card">
+                    <div class="step-icon">📄</div>
+                    <h4>Analyzing Resume</h4>
+                    <p>Extract key information and parse your career story.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon">⚡</div>
+                    <h4>Extracting Skills</h4>
+                    <p>Identify the technical skills and career strengths in your resume.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon">🔎</div>
+                    <h4>Finding Jobs</h4>
+                    <p>Match your profile with local CSV jobs plus live API listings.</p>
+                </div>
+                <div class="step-card">
+                    <div class="step-icon">🤖</div>
+                    <h4>Generating AI Analysis</h4>
+                    <p>Receive smart feedback on the strengths and gaps in your resume.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <div class="loading-overlay" id="loading-overlay">
+        <div class="loading-panel">
+            <div class="spinner"></div>
+            <h2>Preparing your resume report</h2>
+            <p class="loading-step" id="loading-step">Analyzing Resume...</p>
+        </div>
+    </div>
+
+    <script>
+        const form = document.getElementById('resume-form');
+        const overlay = document.getElementById('loading-overlay');
+        const stepLabel = document.getElementById('loading-step');
+        const steps = [
+            'Analyzing Resume...',
+            'Extracting Skills...',
+            'Finding Jobs...',
+            'Generating AI Analysis...'
+        ];
+
+        form.addEventListener('submit', function () {
+            overlay.classList.add('visible');
+            let index = 0;
+            stepLabel.textContent = steps[index];
+            const interval = setInterval(() => {
+                index += 1;
+                if (index >= steps.length) {
+                    index = steps.length - 1;
+                }
+                stepLabel.textContent = steps[index];
+            }, 900);
+        });
+    </script>
+</body>
+</html>
