@@ -1,0 +1,6 @@
+flask
+requests
+pandas
+reportlab
+python-dotenv
+google-generativeai
