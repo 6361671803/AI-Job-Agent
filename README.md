@@ -1,5 +1,5 @@
 # AI-Job-Agent
-##video:https://youtube.com/shorts/l4n3hg3lDPI?feature=share
+##video:https://youtu.be/fFHA3-P65cc
 ## Overview
 
 AI Career Assistant is an intelligent web application that helps job seekers analyze their resumes, identify skill gaps, calculate ATS scores, and receive personalized job recommendations.
